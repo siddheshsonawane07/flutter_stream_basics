@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html';
 
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,14 @@ class _MyAppState extends State<MyApp> {
   StreamController<String> streamController = StreamController();
   TextEditingController textEditingController = TextEditingController();
 
+  late Stream<String> stream;
+
+  @override
+  void initState() {
+    stream = streamController.stream.asBroadcastStream();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,15 +35,26 @@ class _MyAppState extends State<MyApp> {
         body: Column(
           children: [
             StreamBuilder<String>(
-                stream: streamController.stream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(snapshot.data.toString());
-                  } else {
-                    return const Text("Null Data");
-                  }
-                  ;
-                }),
+              stream: stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data.toString());
+                } else {
+                  return const Text("Null Data");
+                }
+              },
+            ),
+            const SizedBox(height: 10),
+            StreamBuilder<String>(
+              stream: stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data.toString());
+                } else {
+                  return const Text("Null Data");
+                }
+              },
+            ),
             SizedBox(
               child: TextField(controller: textEditingController),
             ),
